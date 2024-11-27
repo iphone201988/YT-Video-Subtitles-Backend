@@ -1,0 +1,8 @@
+node_modules
+src/uploads
+.env
+generateSubtitles.js
+insertCaptions.js
+removesilencetool.js
+zapcap_pipeline.js
+.DS_Store

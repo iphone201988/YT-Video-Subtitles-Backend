@@ -43,12 +43,12 @@ export const transcribeAudio = async (audioPath) => {
     });
 
     const { phrases } = processTranscriptionSegments(transcription.segments);
-    const assContent = generateASS(phrases);
+    // const assContent = generateASS(phrases);
     const vttContent = generateVTTFromSegments(phrases);
 
-    console.log("assContent:::", assContent);
+    // console.log("assContent:::", assContent);
 
-    return { assContent, vttContent };
+    return vttContent
   } catch (err) {
     console.error("Error during transcription:", err);
     throw err;

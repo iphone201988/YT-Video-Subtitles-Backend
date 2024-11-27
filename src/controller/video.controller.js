@@ -64,7 +64,7 @@ export const addSubtitles = async (req, res) => {
     console.log("Audio extracted successfully");
 
     // Step 2: Generate subtitles
-    const { assContent, vttContent } = await transcribeAudio(audioOutputPath);
+    const vttContent = await transcribeAudio(audioOutputPath);
     fs.writeFileSync(vttSubtitlePath, vttContent);
 
     convertVttToAss(vttSubtitlePath, captionsDir)
@@ -79,12 +79,12 @@ export const addSubtitles = async (req, res) => {
     console.log("Subtitles generated successfully");
 
     // Step 3: Burn subtitles
-    await burnSubtitlesToVideo(
-      inputVideoPath,
-      assSubtitlePath,
-      outputVideoPath,
-      fontPath
-    );
+    // await burnSubtitlesToVideo(
+    //   inputVideoPath,
+    //   assSubtitlePath,
+    //   outputVideoPath,
+    //   fontPath
+    // );
 
     console.log("Subtitles burned successfully");
 
@@ -95,7 +95,7 @@ export const addSubtitles = async (req, res) => {
       videoPath:
         process.env.BACKEND_URL +
         "/uploads" +
-        outputVideoPath.split("/uploads")[1],
+        inputVideoPath.split("/uploads")[1],
       subtitlesPath:
         process.env.BACKEND_URL +
         "/uploads" +

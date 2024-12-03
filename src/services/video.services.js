@@ -43,12 +43,13 @@ export const transcribeAudio = async (audioPath) => {
     });
 
     const { phrases } = processTranscriptionSegments(transcription.segments);
+
     // const assContent = generateASS(phrases);
     const vttContent = generateVTTFromSegments(phrases);
 
     // console.log("assContent:::", assContent);
 
-    return vttContent
+    return vttContent;
   } catch (err) {
     console.error("Error during transcription:", err);
     throw err;
@@ -65,7 +66,13 @@ const processTranscriptionSegments = (segments) => {
   return { phrases };
 };
 
-function generateASS(phrases) {
+export function generateASS(
+  phrases,
+  fontFamily,
+  fontSize,
+  fontColor,
+  fontWeight
+) {
   const assHeader = `[Script Info]
 Title: Generated Subtitles
 ScriptType: v4.00+
@@ -75,7 +82,7 @@ PlayResY: 720
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Ella,30,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,1,0,2,10,10,10,1
+Style: Default,${fontFamily},${fontSize},${fontColor},&H00FFFFFF,&H00000000,&H00000000,${fontWeight},0,0,0,100,100,0,0,1,1,0,2,10,10,50,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`;
@@ -112,7 +119,7 @@ export const burnSubtitlesToVideo = async (
   let fontDir = "";
   const OutputOptions = [];
 
-  if (fontPath != "") {
+  if (fontPath !== "") {
     fontDir = `:fontsdir=${path
       .dirname(fontPath)
       .replace(/[\\]/g, "\\\\")
@@ -128,33 +135,77 @@ export const burnSubtitlesToVideo = async (
   OutputOptions.push("-crf 23");
   OutputOptions.push("-c:a copy");
 
-  console.log("OutputOptions:::", OutputOptions);
+  // Wrap ffprobe in a Promise
+  const getFrameRate = (videoPath) =>
+    new Promise((resolve, reject) => {
+      ffmpeg.ffprobe(videoPath, (err, metadata) => {
+        if (err) {
+          reject(`Error fetching metadata: ${err}`);
+          return;
+        }
 
-  return new Promise((resolve, reject) => {
-    ffmpeg(inputVideoPath)
-      .videoFilters(
-        `subtitles='${assSubtitlePath
-          .replace(/[\\]/g, "\\\\")
-          .replace(/[']/g, "\\'")}'
-          ${fontDir}`
-      )
-      .outputOptions(OutputOptions)
-      .on("start", (command) => {
-        console.log("FFmpeg process started:", command);
-      })
-      .on("end", () => {
-        console.log("Subtitles burned successfully");
-        resolve();
-      })
-      .on("error", (err) => {
-        console.error("Error burning subtitles:", err);
-        reject(err);
-      })
-      .on("stderr", (stderrLine) => {
-        console.log("FFmpeg stderr:", stderrLine);
-      })
-      .save(outputVideoPath);
-  });
+        // Extract and evaluate frame rate
+        const fps = eval(metadata.streams[0].r_frame_rate); // Convert '23/1' to 23
+        console.log(`Frame Rate: ${fps} fps`);
+        resolve(fps);
+      });
+    });
+
+  try {
+    // const fps = await getFrameRate(inputVideoPath); // Wait for ffprobe to finish
+    // const startFrame = Math.floor(0 * fps); // Start at 0 seconds
+    // const endFrame = Math.floor(8 * fps); // End at 8 seconds
+    // const midFrame = Math.floor((startFrame + endFrame) / 2);
+    // const framesInZoomOut = endFrame - midFrame;
+
+    // const totalFrames = 10 * fps;
+
+    // const zoomFilter = `zoompan=z='1.5-(0.5*in/${totalFrames})':d=1`;
+
+    console.log("OutputOptions:::", OutputOptions);
+
+    // Filters with calculated frame range
+    // const videoFilters = [
+    //   `subtitles='${assSubtitlePath
+    //     .replace(/[\\]/g, "\\\\")
+    //     .replace(/[']/g, "\\'")}' ${fontDir}`,
+    //   `fade=in:0:30`, // Fade-in at the start
+    //   `fade=out:st=34:d=2`, // Fade-out after 34 seconds
+    //   // `zoompan=z='if(between(in,${startFrame},${endFrame}),1.5,1.0)':d=1`, // Zoom effect
+    //   zoomFilter,
+    // ];
+
+    const videoFilters = [
+      `subtitles='${assSubtitlePath
+        .replace(/[\\]/g, "\\\\")
+        .replace(/[']/g, "\\'")}' ${fontDir}`,
+    ];
+
+    // Return a promise for the ffmpeg processing
+    return new Promise((resolve, reject) => {
+      ffmpeg(inputVideoPath)
+        .videoFilters(videoFilters.join(","))
+        .outputOptions(OutputOptions)
+        .on("start", (command) => {
+          console.log("FFmpeg process started:", command);
+        })
+        .on("end", () => {
+          console.log("Subtitles burned successfully");
+          resolve();
+        })
+        .on("error", (err) => {
+          console.error("Error burning subtitles:", err);
+          reject(err);
+        })
+        .on("stderr", (stderrLine) => {
+          console.log("FFmpeg stderr:", stderrLine);
+        })
+        .save(outputVideoPath);
+    });
+  } catch (error) {
+    console.error("Error processing video:", error);
+    throw error;
+  }
 };
 
 export const generateVTTFromSegments = (segments) => {

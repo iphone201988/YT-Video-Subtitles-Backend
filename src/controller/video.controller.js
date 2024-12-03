@@ -2,6 +2,7 @@ import {
   burnSubtitlesToVideo,
   convertVttToAss,
   extractAudio,
+  generateASS,
   transcribeAudio,
 } from "../services/video.services.js";
 import fs from "fs";
@@ -33,6 +34,15 @@ const AliFontPath = path.join(__dirname, `../../fonts/Ali.ttf`);
 const MaltaFontPath = path.join(__dirname, `../../fonts/malta.ttf`);
 const BeastFontPath = path.join(__dirname, `../../fonts/beast.ttf`);
 
+const fontProperties = {
+  Ella: {
+    fontFamily: "Ella",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+};
+
 export const addSubtitles = async (req, res) => {
   const { font } = req.body;
   if (!req.file) {
@@ -46,7 +56,6 @@ export const addSubtitles = async (req, res) => {
   const fileName = path.parse(req.file.filename).name;
 
   const audioOutputPath = path.join(audioDir, `${fileName}.wav`);
-  const assSubtitlePath = path.join(captionsDir, `${fileName}.ass`);
   const vttSubtitlePath = path.join(captionsDir, `${fileName}.vtt`);
   const outputVideoPath = path.join(
     uploadsDir,
@@ -84,7 +93,7 @@ export const addSubtitles = async (req, res) => {
     //   assSubtitlePath,
     //   outputVideoPath,
     //   fontPath
-    // );
+    //   );
 
     console.log("Subtitles burned successfully");
 
@@ -92,6 +101,7 @@ export const addSubtitles = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Video processed successfully",
+      outputVideoPath,
       videoPath:
         process.env.BACKEND_URL +
         "/uploads" +
@@ -117,4 +127,55 @@ export const addSubtitles = async (req, res) => {
       console.error("Error cleaning up temporary files:", err);
     }
   }
+};
+
+export const burnSubtitleIntoVideo = async (req, res, next) => {
+  const { vttContent, font, fileName, ext } = req.body;
+
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: "No video file uploaded",
+    });
+  }
+
+  let fontPath = "";
+  const inputVideoPath = path.join(uploadsDir, `${fileName}.${ext}`);
+
+  const assSubtitlePath = path.join(captionsDir, `${fileName}.ass`);
+  const outputVideoPath = path.join(
+    uploadsDir,
+    `${fileName}_with_captions.mkv`
+  );
+
+  if (font == "Ella") {
+    fontPath = EllaFontPath;
+  }
+
+  const assContent = generateASS(
+    JSON.parse(vttContent),
+    fontProperties[font].fontFamily,
+    fontProperties[font].fontSize,
+    fontProperties[font].fontColor,
+    fontProperties[font].fontWeight
+  );
+
+  console.log("assContent::::", assContent);
+  fs.writeFileSync(assSubtitlePath, assContent);
+
+  await burnSubtitlesToVideo(
+    inputVideoPath,
+    assSubtitlePath,
+    outputVideoPath,
+    fontPath
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Video processed successfully",
+    videoPath:
+      process.env.BACKEND_URL +
+      "/uploads" +
+      outputVideoPath.split("/uploads")[1],
+  });
 };

@@ -44,7 +44,7 @@ const fontProperties = {
   Ella: {
     fontFamily: "Ella",
     fontSize: "20",
-    fontColor: "#FF0000",
+    fontColor: "&H00FFFFFF",
     fontWeight: "1",
   },
   William: {
@@ -103,7 +103,7 @@ const fontProperties = {
   },
   Mayron: {
     fontFamily: "Mayron",
-    fontSize: "20",
+    fontSize: "30",
     fontColor: "#FF0000",
     fontWeight: "1",
   },

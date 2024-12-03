@@ -68,7 +68,7 @@ const fontProperties = {
   Andy: {
     fontFamily: "Andy",
     fontSize: "20",
-    fontColor: "#FF0000",
+    fontColor: "&H00FFFFFF",
     fontWeight: "1",
   },
   Beast: {
@@ -98,13 +98,13 @@ const fontProperties = {
   Lalia: {
     fontFamily: "Lalia",
     fontSize: "20",
-    fontColor: "#FF0000",
+    fontColor: "&H00FFFFFF",
     fontWeight: "1",
   },
-  Mayron: {
-    fontFamily: "Mayron",
+  Myron: {
+    fontFamily: "Myron",
     fontSize: "30",
-    fontColor: "#FF0000",
+    fontColor: "&H00FFFFFF",
     fontWeight: "1",
   },
 };

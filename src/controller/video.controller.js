@@ -132,13 +132,6 @@ export const addSubtitles = async (req, res) => {
 export const burnSubtitleIntoVideo = async (req, res, next) => {
   const { vttContent, font, fileName, ext } = req.body;
 
-  if (!req.file) {
-    return res.status(400).json({
-      success: false,
-      message: "No video file uploaded",
-    });
-  }
-
   let fontPath = "";
   const inputVideoPath = path.join(uploadsDir, `${fileName}.${ext}`);
 
@@ -153,7 +146,7 @@ export const burnSubtitleIntoVideo = async (req, res, next) => {
   }
 
   const assContent = generateASS(
-    JSON.parse(vttContent),
+    vttContent,
     fontProperties[font].fontFamily,
     fontProperties[font].fontSize,
     fontProperties[font].fontColor,

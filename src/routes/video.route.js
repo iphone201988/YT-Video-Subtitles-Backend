@@ -8,10 +8,6 @@ import { upload } from "../middleware/multer.middleware.js";
 const videoRoutes = express.Router();
 
 videoRoutes.use("/addSubtitles", upload.single("video"), addSubtitles);
-videoRoutes.use(
-  "/getSubtitledVideo",
-  upload.single("video"),
-  burnSubtitleIntoVideo
-);
+videoRoutes.use("/getSubtitledVideo", burnSubtitleIntoVideo);
 
 export default videoRoutes;

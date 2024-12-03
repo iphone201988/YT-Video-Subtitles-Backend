@@ -28,15 +28,81 @@ if (!fs.existsSync(audioDir)) {
   fs.mkdirSync(audioDir, { recursive: true });
 }
 
-const EllaFontPath = path.join(__dirname, `../../fonts/Ella.otf`);
-const WilliamFontPath = path.join(__dirname, `../../fonts/Williamdemo.otf`);
+const EllaFontPath = path.join(__dirname, `../../fonts/Ella.ttf`);
+const WilliamFontPath = path.join(__dirname, `../../fonts/William.ttf`);
 const AliFontPath = path.join(__dirname, `../../fonts/Ali.ttf`);
-const MaltaFontPath = path.join(__dirname, `../../fonts/malta.ttf`);
+const AlexFontPath = path.join(__dirname, `../../fonts/Alex.ttf`);
+const AndyFontPath = path.join(__dirname, `../../fonts/Andy.ttf`);
 const BeastFontPath = path.join(__dirname, `../../fonts/beast.ttf`);
+const BulmarFontPath = path.join(__dirname, `../../fonts/Bulmar.ttf`);
+const DevinFontPath = path.join(__dirname, `../../fonts/Devin.ttf`);
+const ImanFontPath = path.join(__dirname, `../../fonts/Iman.ttf`);
+const LaliaFontPath = path.join(__dirname, `../../fonts/Lalia.ttf`);
+const MayronFontPath = path.join(__dirname, `../../fonts/Mayron.ttf`);
 
 const fontProperties = {
   Ella: {
     fontFamily: "Ella",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  William: {
+    fontFamily: "William",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Ali: {
+    fontFamily: "Ali",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Alex: {
+    fontFamily: "Alex",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Andy: {
+    fontFamily: "Andy",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Beast: {
+    fontFamily: "Beast",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Bulmar: {
+    fontFamily: "Bulmar",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Devin: {
+    fontFamily: "Devin",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Iman: {
+    fontFamily: "Iman",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Lalia: {
+    fontFamily: "Lalia",
+    fontSize: "20",
+    fontColor: "#FF0000",
+    fontWeight: "1",
+  },
+  Mayron: {
+    fontFamily: "Mayron",
     fontSize: "20",
     fontColor: "#FF0000",
     fontWeight: "1",
@@ -143,6 +209,36 @@ export const burnSubtitleIntoVideo = async (req, res, next) => {
 
   if (font == "Ella") {
     fontPath = EllaFontPath;
+  }
+  if (font == "William") {
+    fontPath = WilliamFontPath;
+  }
+  if (font == "Ali") {
+    fontPath = AliFontPath;
+  }
+  if (font == "Alex") {
+    fontPath = AlexFontPath;
+  }
+  if (font == "Andy") {
+    fontPath = AndyFontPath;
+  }
+  if (font == "Beast") {
+    fontPath = BeastFontPath;
+  }
+  if (font == "Bulmar") {
+    fontPath = BulmarFontPath;
+  }
+  if (font == "Devin") {
+    fontPath = DevinFontPath;
+  }
+  if (font == "Iman") {
+    fontPath = ImanFontPath;
+  }
+  if (font == "Lalia") {
+    fontPath = LaliaFontPath;
+  }
+  if (font == "Mayron") {
+    fontPath = MayronFontPath;
   }
 
   const assContent = generateASS(

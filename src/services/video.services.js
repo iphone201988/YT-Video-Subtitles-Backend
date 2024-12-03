@@ -132,7 +132,7 @@ export const burnSubtitlesToVideo = async (
   }
   OutputOptions.push("-c:v libx264");
   OutputOptions.push("-preset fast");
-  OutputOptions.push("-crf 23");
+  OutputOptions.push("-crf 18");
   OutputOptions.push("-c:a copy");
 
   // Wrap ffprobe in a Promise

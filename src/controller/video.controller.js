@@ -58,7 +58,7 @@ const fontProperties = {
     fontSize: "30",
     fontColor: "&H00FFFFFF",
     fontWeight: "1",
-  },  
+  },
   Alex: {
     fontFamily: "Alex",
     fontSize: "30",

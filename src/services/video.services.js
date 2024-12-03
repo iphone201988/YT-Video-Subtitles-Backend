@@ -89,8 +89,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\
 
   const assEvents = phrases
     .map((phrase) => {
-      const start = formatASSTime(phrase.start);
-      const end = formatASSTime(phrase.end);
+      const start = formatASSTime(phrase.startTime);
+      const end = formatASSTime(phrase.endTime);
       const text = phrase.text.replace(/[\r\n]+/g, " ").trim();
       return `Dialogue: 0,${start},${end},Default,,0,0,0,,${text}`;
     })
